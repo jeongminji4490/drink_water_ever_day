@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_project/home.dart';
+import 'package:device_preview/device_preview.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(
+  DevicePreview(
+    builder: (context) => const MyApp(),
+  ),
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -14,98 +18,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MainPage(
-          title: "Daily Water",
-      ),
+      home: const HomeScreen(),
     );
   }
-}
-
-class MainPage extends StatelessWidget {
-  const MainPage({super.key, required this.title);
-
-  final String title;
-  final String subTitle =  "Today's goal";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: <Widget> [
-              Container(
-                width: double.infinity,
-                height: 200,
-                margin: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                      color: Colors.black,
-                      width: 2
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      subTitle,
-                      style: const TextStyle(
-                        fontFamily: 'AmaticscBold',
-                        fontSize: 23
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset(
-                          'assets/images/cup.png',
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Image.asset(
-                          'assets/images/cup.png',
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Image.asset(
-                          'assets/images/empty_cup.png',
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Image.asset(
-                          'assets/images/empty_cup.png',
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.fitWidth,
-                        )
-                      ],
-                    ),
-                    Text(
-                      "2/4",
-                      style: TextStyle(
-                          fontFamily: 'AmaticscBold',
-                          fontSize: 23
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
 }
 
 class MyHomePage extends StatefulWidget {
