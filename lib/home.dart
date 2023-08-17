@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_flutter_project/cup_image.dart';
+import 'package:my_flutter_project/database_helper.dart';
+import 'package:my_flutter_project/stamp.dart';
+import 'package:my_flutter_project/stamp_builder.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,21 +13,46 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final String title = "Drink 8 Water";
-  int _cards = 0;
 
-  void _drinkWater() {
+  final DatabaseHelper dbHelper = DatabaseHelper();
+
+  final String title = "Drink 8 Water";
+
+  int cups = 0;
+
+  Future<Stamp> getStamp(String date) async {
+    return await dbHelper.getStamp(date);
+  }
+
+  Future<List<Stamp>> getAllStamps() async {
+    return await dbHelper.getAllStamps();
+  }
+
+  Future<void> insertStamp(String date) async {
+    await dbHelper
+        .insert(Stamp(date: date, cups: cups));
+  }
+  
+  Future<void> deleteStamp(String date) async {
+    await dbHelper.delete(date);
+  }
+
+  void _drinkWater(String date) {
     setState(() {
-      if (_cards != 8) {
-        _cards++;
+      print("cups: $cups");
+      if (cups < 8) {
+        cups++;
+      }
+      if (cups == 8) {
+        insertStamp(date);
       }
     });
   }
 
   void _myMistake() {
     setState(() {
-      if (_cards != 0) {
-        _cards--;
+      if (cups > 0) {
+        cups--;
       }
     });
   }
@@ -44,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               Container(
                 width: double.infinity,
-                height: 200,
+                height: 180,
                 margin: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -56,16 +84,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       todayDate,
                       style: const TextStyle(
-                          fontFamily: 'AmaticscBold', fontSize: 23),
+                          fontFamily: 'AmaticscBold', fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 15),
-                    if (_cards == 0)
+                    if (cups == 0)
                       const Expanded(
                         child: Text(
                           "You haven't even had a glass of water today!",
                           style: TextStyle(
-                              fontFamily: 'AmaticscBold', fontSize: 13),
+                              fontFamily: 'AmaticscBold', fontSize: 10),
                           textAlign: TextAlign.center,
                         ),
                       )
@@ -74,14 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            for (int i = 0; i < _cards; i++) const CupImage()
+                            for (int i = 0; i < cups; i++) const CupImage()
                           ],
                         ),
                       ),
                     Text(
-                      "$_cards/8",
-                      style:
-                          TextStyle(fontFamily: 'AmaticscBold', fontSize: 23),
+                      "$cups/8",
+                      style: const TextStyle(
+                          fontFamily: 'AmaticscBold', fontSize: 23),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -92,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: _drinkWater,
+                        onPressed: () => {
+                          _drinkWater(todayDate),
+                          // insertStamp(todayDate)
+                        },
                         icon: const Icon(Icons.add, color: Colors.black),
                         label: const Text(
                           "Add",
@@ -110,7 +141,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(width: 5),
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: _myMistake,
+                        onPressed: () => {
+                          _myMistake(),
+                          deleteStamp(todayDate)
+                        },
                         icon: const Icon(Icons.delete, color: Colors.white),
                         label: const Text(
                           "Delete",
@@ -126,6 +160,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              if (cups == 8) ...[
+                const Icon(
+                  Icons.check_circle,
+                  color: Colors.black,
+                  size: 30.0,
+                ),
+                const Text(
+                  "Success",
+                  style: TextStyle(
+                      fontFamily: 'AmaticscBold',
+                      fontSize: 15,
+                      color: Colors.black),
+                ),
+              ],
+              StampBuilder(future: getAllStamps())
             ],
           ),
         ),
