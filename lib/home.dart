@@ -4,6 +4,7 @@ import 'package:my_flutter_project/cup_image.dart';
 import 'package:my_flutter_project/database_helper.dart';
 import 'package:my_flutter_project/stamp.dart';
 import 'package:my_flutter_project/stamp_builder.dart';
+import 'package:my_flutter_project/dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -45,6 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       if (cups == 8) {
         insertStamp(date);
+        showDialog(context: context, builder: (_) =>
+            const CustomDialog()
+        );
       }
     });
   }
@@ -121,7 +125,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () => {
-                          _drinkWater(todayDate),
+                          if (cups != 8) {
+                            _drinkWater(todayDate)
+                          }
                           // insertStamp(todayDate)
                         },
                         icon: const Icon(Icons.add, color: Colors.black),
@@ -161,18 +167,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               if (cups == 8) ...[
-                const Icon(
-                  Icons.check_circle,
-                  color: Colors.black,
-                  size: 30.0,
-                ),
-                const Text(
-                  "Success",
-                  style: TextStyle(
-                      fontFamily: 'AmaticscBold',
-                      fontSize: 15,
-                      color: Colors.black),
-                ),
+                // showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return AlertDialog(
+                //         title: Text(""),
+                //         content: SingleChildScrollView(
+                //           child: ListBody(
+                //             children: <Widget>[
+                //               Text("Test1"),
+                //               Text("Test2")
+                //             ],
+                //           ),
+                //         ),
+                //       )
+                //     })
+                // const Icon(
+                //   Icons.check_circle,
+                //   color: Colors.black,
+                //   size: 30.0,
+                // ),
+                // const Text(
+                //   "Success",
+                //   style: TextStyle(
+                //       fontFamily: 'AmaticscBold',
+                //       fontSize: 15,
+                //       color: Colors.black),
+                // ),
               ],
               StampBuilder(future: getAllStamps())
             ],

@@ -40,7 +40,7 @@ class StampBuilder extends StatelessWidget {
   Widget _buildStampCard(Stamp stamp, BuildContext context) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12.0),
         child: Text(
           stamp.date,
           style: const TextStyle(fontFamily: 'AmaticscBold', fontSize: 10),
